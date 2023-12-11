@@ -17,37 +17,39 @@ import (
 // resourceImportStringFormats contains a mapping of the resource type to the
 // composite ID that is compatible with performing an import.
 var resourceImportStringFormats = map[string]string{
-	"cloudflare_access_group":          ":account_id/:id",
-	"cloudflare_access_rule":           ":identifier_type/:identifier_value/:id",
-	"cloudflare_account_member":        ":account_id/:id",
-	"cloudflare_argo":                  ":zone_id/argo",
-	"cloudflare_bot_management":        ":zone_id",
-	"cloudflare_byo_ip_prefix":         ":id",
-	"cloudflare_certificate_pack":      ":zone_id/:id",
-	"cloudflare_custom_hostname":       ":zone_id/:id",
-	"cloudflare_custom_pages":          ":identifier_type/:identifier_value/:id",
-	"cloudflare_custom_ssl":            ":zone_id/:id",
-	"cloudflare_filter":                ":zone_id/:id",
-	"cloudflare_firewall_rule":         ":zone_id/:id",
-	"cloudflare_healthcheck":           ":zone_id/:id",
-	"cloudflare_ip_list":               ":account_id/:id",
-	"cloudflare_load_balancer":         ":zone_id/:id",
-	"cloudflare_load_balancer_pool":    ":account_id/:id",
-	"cloudflare_load_balancer_monitor": ":account_id/:id",
-	"cloudflare_origin_ca_certificate": ":id",
-	"cloudflare_page_rule":             ":zone_id/:id",
-	"cloudflare_rate_limit":            ":zone_id/:id",
-	"cloudflare_record":                ":zone_id/:id",
-	"cloudflare_ruleset":               ":identifier_type/:identifier_value/:id",
-	"cloudflare_spectrum_application":  ":zone_id/:id",
-	"cloudflare_tunnel":                ":account_id/:id",
-	"cloudflare_turnstile_widget":      ":account_id/:id",
-	"cloudflare_waf_override":          ":zone_id/:id",
-	"cloudflare_waiting_room":          ":zone_id/:id",
-	"cloudflare_worker_route":          ":zone_id/:id",
-	"cloudflare_workers_kv_namespace":  ":id",
-	"cloudflare_zone_lockdown":         ":zone_id/:id",
-	"cloudflare_zone":                  ":id",
+	"cloudflare_access_application":       ":account_id/:id",
+	"cloudflare_access_group":             ":account_id/:id",
+	"cloudflare_access_identity_provider": ":account_id/:id",
+	"cloudflare_access_rule":              ":identifier_type/:identifier_value/:id",
+	"cloudflare_account_member":           ":account_id/:id",
+	"cloudflare_argo":                     ":zone_id/argo",
+	"cloudflare_bot_management":           ":zone_id",
+	"cloudflare_byo_ip_prefix":            ":id",
+	"cloudflare_certificate_pack":         ":zone_id/:id",
+	"cloudflare_custom_hostname":          ":zone_id/:id",
+	"cloudflare_custom_pages":             ":identifier_type/:identifier_value/:id",
+	"cloudflare_custom_ssl":               ":zone_id/:id",
+	"cloudflare_filter":                   ":zone_id/:id",
+	"cloudflare_firewall_rule":            ":zone_id/:id",
+	"cloudflare_healthcheck":              ":zone_id/:id",
+	"cloudflare_ip_list":                  ":account_id/:id",
+	"cloudflare_load_balancer":            ":zone_id/:id",
+	"cloudflare_load_balancer_pool":       ":account_id/:id",
+	"cloudflare_load_balancer_monitor":    ":account_id/:id",
+	"cloudflare_origin_ca_certificate":    ":id",
+	"cloudflare_page_rule":                ":zone_id/:id",
+	"cloudflare_rate_limit":               ":zone_id/:id",
+	"cloudflare_record":                   ":zone_id/:id",
+	"cloudflare_ruleset":                  ":identifier_type/:identifier_value/:id",
+	"cloudflare_spectrum_application":     ":zone_id/:id",
+	"cloudflare_tunnel":                   ":account_id/:id",
+	"cloudflare_turnstile_widget":         ":account_id/:id",
+	"cloudflare_waf_override":             ":zone_id/:id",
+	"cloudflare_waiting_room":             ":zone_id/:id",
+	"cloudflare_worker_route":             ":zone_id/:id",
+	"cloudflare_workers_kv_namespace":     ":id",
+	"cloudflare_zone_lockdown":            ":zone_id/:id",
+	"cloudflare_zone":                     ":id",
 }
 
 func init() {
@@ -73,8 +75,30 @@ func runImport() func(cmd *cobra.Command, args []string) {
 		}
 
 		switch resourceType {
+		case "cloudflare_access_application":
+			jsonPayload, _, err := api.ListAccessApplications(context.Background(), identifier, cloudflare.ListAccessApplicationsParams{})
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			m, _ := json.Marshal(jsonPayload)
+			err = json.Unmarshal(m, &jsonStructData)
+			if err != nil {
+				log.Fatal(err)
+			}
 		case "cloudflare_access_group":
 			jsonPayload, _, err := api.ListAccessGroups(context.Background(), identifier, cloudflare.ListAccessGroupsParams{})
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			m, _ := json.Marshal(jsonPayload)
+			err = json.Unmarshal(m, &jsonStructData)
+			if err != nil {
+				log.Fatal(err)
+			}
+		case "cloudflare_access_identity_provider":
+			jsonPayload, _, err := api.ListAccessIdentityProviders(context.Background(), identifier, cloudflare.ListAccessIdentityProvidersParams{})
 			if err != nil {
 				log.Fatal(err)
 			}
